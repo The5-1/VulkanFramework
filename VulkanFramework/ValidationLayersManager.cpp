@@ -4,9 +4,6 @@
 
 ValidationLayersManager::ValidationLayersManager()
 {
-	if (!checkValidationLayerSupport()) {
-		throw std::runtime_error("[ValidationLayersManager] Validation layers requested, but not available!");
-	}
 }
 
 
@@ -14,31 +11,6 @@ ValidationLayersManager::~ValidationLayersManager()
 {
 }
 
-
-bool ValidationLayersManager::checkValidationLayerSupport() {
-	uint32_t layerCount;
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr); //Number of all available validation layers
-
-	std::vector<VkLayerProperties> availableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data()); //Data of all available validation layers
-
-	for (const char* layerName : m_validationLayers) {
-		bool layerFound = false;
-
-		for (const auto& layerProperties : availableLayers) {
-			if (strcmp(layerName, layerProperties.layerName) == 0) {
-				layerFound = true;
-				break;
-			}
-		}
-
-		if (!layerFound) {
-			return false;
-		}
-	}
-
-	return true;
-}
 
 VkResult ValidationLayersManager::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pCallback) {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
@@ -51,23 +23,20 @@ VkResult ValidationLayersManager::CreateDebugUtilsMessengerEXT(VkInstance instan
 }
 
 void ValidationLayersManager::setupDebugCallback(VkInstance instance) {
-
 	VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 	createInfo.pfnUserCallback = debugCallback;
 
-	if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &m_callback) != VK_SUCCESS) {
+	if (this->CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &this->callback) != VK_SUCCESS) {
 		throw std::runtime_error("failed to set up debug callback!");
 	}
 }
 
-void ValidationLayersManager::DestroyDebugUtilsMessengerEXT(VkInstance instance, const VkAllocationCallbacks* pAllocator) {
+void ValidationLayersManager::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT callback, const VkAllocationCallbacks* pAllocator) {
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-
 	if (func != nullptr) {
-		func(instance, m_callback, pAllocator);
+		func(instance, callback, pAllocator);
 	}
 }
-
