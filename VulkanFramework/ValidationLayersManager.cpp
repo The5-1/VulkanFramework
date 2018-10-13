@@ -50,7 +50,7 @@ VkResult ValidationLayersManager::CreateDebugUtilsMessengerEXT(VkInstance instan
 	}
 }
 
-void ValidationLayersManager::setupDebugCallback(VkInstance instance) {
+void ValidationLayersManager::setupDebugCallback(VkInstance& instance) {
 
 	VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -63,7 +63,7 @@ void ValidationLayersManager::setupDebugCallback(VkInstance instance) {
 	}
 }
 
-void ValidationLayersManager::DestroyDebugUtilsMessengerEXT(VkInstance instance, const VkAllocationCallbacks* pAllocator) {
+void ValidationLayersManager::DestroyDebugUtilsMessengerEXT(VkInstance& instance, const VkAllocationCallbacks* pAllocator) {
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
 
 	if (func != nullptr) {

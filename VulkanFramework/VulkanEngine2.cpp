@@ -5,39 +5,23 @@
 VulkanEngine2::VulkanEngine2()
 {
 	createInstance();
-	setupDebugCallback();
+
+	validationsLayersManager = new ValidationLayersManager2();
+	validationsLayersManager->setupDebugCallback(this->instance);
 }
 
 
 VulkanEngine2::~VulkanEngine2()
 {
-	if (enableValidationLayers) {
-		DestroyDebugUtilsMessengerEXT(instance, callback, nullptr);
+	if (validationsLayersManager->enableValidationLayers) {
+		validationsLayersManager->DestroyDebugUtilsMessengerEXT(instance, validationsLayersManager->callback, nullptr);
 	}
 
 	vkDestroyInstance(instance, nullptr);
 }
 
-
-VkResult VulkanEngine2::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pCallback) {
-	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-	if (func != nullptr) {
-		return func(instance, pCreateInfo, pAllocator, pCallback);
-	}
-	else {
-		return VK_ERROR_EXTENSION_NOT_PRESENT;
-	}
-}
-
-void VulkanEngine2::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT callback, const VkAllocationCallbacks* pAllocator) {
-	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-	if (func != nullptr) {
-		func(instance, callback, pAllocator);
-	}
-}
-
 void VulkanEngine2::createInstance() {
-	if (enableValidationLayers && !checkValidationLayerSupport()) {
+	if (validationsLayersManager->enableValidationLayers && !validationsLayersManager->checkValidationLayerSupport()) {
 		throw std::runtime_error("validation layers requested, but not available!");
 	}
 
@@ -57,9 +41,9 @@ void VulkanEngine2::createInstance() {
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 	createInfo.ppEnabledExtensionNames = extensions.data();
 
-	if (enableValidationLayers) {
-		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-		createInfo.ppEnabledLayerNames = validationLayers.data();
+	if (validationsLayersManager->enableValidationLayers) {
+		createInfo.enabledLayerCount = validationsLayersManager->validationLayers.size();
+		createInfo.ppEnabledLayerNames = validationsLayersManager->validationLayers.data();
 	}
 	else {
 		createInfo.enabledLayerCount = 0;
@@ -67,20 +51,6 @@ void VulkanEngine2::createInstance() {
 
 	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create instance!");
-	}
-}
-
-void VulkanEngine2::setupDebugCallback() {
-	if (!enableValidationLayers) return;
-
-	VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-	createInfo.pfnUserCallback = debugCallback;
-
-	if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS) {
-		throw std::runtime_error("failed to set up debug callback!");
 	}
 }
 
@@ -96,29 +66,4 @@ std::vector<const char*> VulkanEngine2::getRequiredExtensions() {
 	}
 
 	return extensions;
-}
-
-bool VulkanEngine2::checkValidationLayerSupport() {
-	uint32_t layerCount;
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr); //Number of all available validation layers
-
-	std::vector<VkLayerProperties> availableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data()); //Data of all available validation layers
-
-	for (const char* layerName : validationLayers) {
-		bool layerFound = false;
-
-		for (const auto& layerProperties : availableLayers) {
-			if (strcmp(layerName, layerProperties.layerName) == 0) {
-				layerFound = true;
-				break;
-			}
-		}
-
-		if (!layerFound) {
-			return false;
-		}
-	}
-
-	return true;
 }

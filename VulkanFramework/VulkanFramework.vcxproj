@@ -117,11 +117,13 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ValidationLayersManager.cpp" />
+    <ClCompile Include="ValidationLayersManager2.cpp" />
     <ClCompile Include="VulkanEngine.cpp" />
     <ClCompile Include="VulkanEngine2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ValidationLayersManager.h" />
+    <ClInclude Include="ValidationLayersManager2.h" />
     <ClInclude Include="VulkanEngine.h" />
     <ClInclude Include="VulkanEngine2.h" />
   </ItemGroup>
