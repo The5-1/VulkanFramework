@@ -115,12 +115,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LogicalDevice.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicalDevice.cpp" />
     <ClCompile Include="ValidationLayersManager.cpp" />
     <ClCompile Include="VulkanEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LogicalDevice.h" />
     <ClInclude Include="optional.h" />
+    <ClInclude Include="PhysicalDevice.h" />
     <ClInclude Include="ValidationLayersManager.h" />
     <ClInclude Include="VulkanEngine.h" />
   </ItemGroup>

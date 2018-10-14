@@ -9,11 +9,13 @@ VulkanEngine::VulkanEngine()
 	createInstance();
 
 	if (enableValidationLayers) {
+		std::cout << "enableValidationLayers active" << std::endl;
 		layersManager->setupDebugCallback(instance);
 	}
 
 	pickPhysicalDevice();
 
+	createLogicalDevice();
 }
 
 
@@ -108,8 +110,6 @@ Physical devices
 */
 void VulkanEngine::pickPhysicalDevice()
 {
-	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
@@ -120,23 +120,44 @@ void VulkanEngine::pickPhysicalDevice()
 	std::vector<VkPhysicalDevice> devices(deviceCount);
 	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
-	// Use an ordered map to automatically sort candidates by increasing score
-	std::multimap<int, VkPhysicalDevice> candidates;
-
 	for (const auto& device : devices) {
-		int score = rateDeviceSuitability(device);
 		if (isDeviceSuitable(device)) {
-			candidates.insert(std::make_pair(score, device));
+			physicalDevice = device;
+			break;
 		}
 	}
 
-	// Check if the best candidate is suitable at all
-	if (candidates.rbegin()->first > 0) {
-		physicalDevice = candidates.rbegin()->second;
-	}
-	else {
+	if (physicalDevice == VK_NULL_HANDLE) {
 		throw std::runtime_error("failed to find a suitable GPU!");
 	}
+
+	//VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+	//uint32_t deviceCount = 0;
+	//vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+
+	//if (deviceCount == 0) {
+	//	throw std::runtime_error("failed to find GPUs with Vulkan support!");
+	//}
+
+	//std::vector<VkPhysicalDevice> devices(deviceCount);
+	//vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+
+	//// Use an ordered map to automatically sort candidates by increasing score
+	//std::multimap<int, VkPhysicalDevice> candidates;
+
+	//for (const auto& device : devices) {
+	//	int score = rateDeviceSuitability(device);
+	//		candidates.insert(std::make_pair(score, device));
+	//}
+
+	//// Check if the best candidate is suitable at all
+	//if (candidates.rbegin()->first > 0) {
+	//	physicalDevice = candidates.rbegin()->second;
+	//}
+	//else {
+	//	throw std::runtime_error("failed to find a suitable GPU!");
+	//}
 }
 
 
@@ -206,17 +227,18 @@ void VulkanEngine::createLogicalDevice() {
 	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 	queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
 	queueCreateInfo.queueCount = 1;
+
 	float queuePriority = 1.0f;
 	queueCreateInfo.pQueuePriorities = &queuePriority;
 
-
 	VkPhysicalDeviceFeatures deviceFeatures = {};
-
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
 	createInfo.pQueueCreateInfos = &queueCreateInfo;
 	createInfo.queueCreateInfoCount = 1;
+
 	createInfo.pEnabledFeatures = &deviceFeatures;
 
 	createInfo.enabledExtensionCount = 0;
@@ -232,4 +254,6 @@ void VulkanEngine::createLogicalDevice() {
 	if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device!");
 	}
+
+	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
 }

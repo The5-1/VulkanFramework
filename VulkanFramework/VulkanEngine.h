@@ -9,6 +9,7 @@
 #include <map>
 #include "optional.h"
 #include "ValidationLayersManager.h"
+#include "PhysicalDevice.h"
 
 struct QueueFamilyIndices {
 	tl::optional<uint32_t> graphicsFamily;
@@ -27,6 +28,7 @@ private:
 	VkDevice device;	//Logical device
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; //Logical device
 	VkQueue graphicsQueue;	//Logical device
+
 #ifdef NDEBUG
 	const bool enableValidationLayers = false;
 #else

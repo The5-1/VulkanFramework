@@ -30,7 +30,7 @@ void ValidationLayersManager::setupDebugCallback(VkInstance instance) {
 	createInfo.pfnUserCallback = debugCallback;
 
 	if (this->CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &this->callback) != VK_SUCCESS) {
-		throw std::runtime_error("failed to set up debug callback!");
+		throw std::runtime_error("Failed to set up debug callback!");
 	}
 }
 
