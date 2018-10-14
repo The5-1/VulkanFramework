@@ -120,6 +120,7 @@
     <ClCompile Include="VulkanEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="optional.h" />
     <ClInclude Include="ValidationLayersManager.h" />
     <ClInclude Include="VulkanEngine.h" />
   </ItemGroup>
