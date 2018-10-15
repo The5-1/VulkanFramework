@@ -6,10 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 #include "VulkanEngine.h"
-
-const int WIDTH = 800;
-const int HEIGHT = 600;
-
+#include "Window.h"
 
 class HelloTriangleApplication {
 public:
@@ -21,16 +18,11 @@ public:
 	}
 
 private:
-	GLFWwindow* window;
+	Window* window = nullptr;
 	VulkanEngine* engine = nullptr;
 
 	void initWindow() {
-		glfwInit();
-
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr); //(Width, height, title, specifiy monitor, OpenGL only)
+		window = new Window();
 	}
 
 	void initVulkan() {
@@ -38,17 +30,14 @@ private:
 	}
 
 	void mainLoop() {
-		while (!glfwWindowShouldClose(window)) {
+		while (!window->shouldClose()) {
 			glfwPollEvents();
 		}
 	}
 
 	void cleanup() {
 		delete engine;
-
-		glfwDestroyWindow(window);
-
-		glfwTerminate();
+		delete window;
 	}
 };
 

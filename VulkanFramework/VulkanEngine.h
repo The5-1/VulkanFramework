@@ -11,23 +11,12 @@
 #include "ValidationLayersManager.h"
 #include "PhysicalDevice.h"
 
-struct QueueFamilyIndices {
-	tl::optional<uint32_t> graphicsFamily;
-
-	bool isComplete() {
-		return graphicsFamily.has_value();
-	}
-};
-
 class VulkanEngine
 {
 private:
 	VkInstance instance;
 	ValidationLayersManager* layersManager = nullptr;
-
-	VkDevice device;	//Logical device
-	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; //Logical device
-	VkQueue graphicsQueue;	//Logical device
+	PhysicalDevice * physicalDevice = nullptr;
 
 #ifdef NDEBUG
 	const bool enableValidationLayers = false;
@@ -42,16 +31,6 @@ public:
 	void createInstance();
 	std::vector<const char*> getRequiredExtensions();
 	bool checkValidationLayerSupport();
-
-	void pickPhysicalDevice();
-
-	int rateDeviceSuitability(VkPhysicalDevice device);
-
-	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
-	bool isDeviceSuitable(VkPhysicalDevice device);
-
-	void createLogicalDevice();
 
 private:
 

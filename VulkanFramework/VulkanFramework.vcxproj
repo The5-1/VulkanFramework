@@ -120,6 +120,7 @@
     <ClCompile Include="PhysicalDevice.cpp" />
     <ClCompile Include="ValidationLayersManager.cpp" />
     <ClCompile Include="VulkanEngine.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LogicalDevice.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="PhysicalDevice.h" />
     <ClInclude Include="ValidationLayersManager.h" />
     <ClInclude Include="VulkanEngine.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

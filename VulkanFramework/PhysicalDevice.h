@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "optional.h"
-
+#include "ValidationLayersManager.h"
 struct QueueFamilyIndices {
 	tl::optional<uint32_t> graphicsFamily;
 
@@ -15,8 +15,19 @@ struct QueueFamilyIndices {
 
 class PhysicalDevice
 {
-private:
+public:
+	//Physical Device
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+	//Logical Device
+	VkDevice device;
+	VkQueue graphicsQueue;
+
+#ifdef NDEBUG
+	const bool enableValidationLayers = false;
+#else
+	const bool enableValidationLayers = true;
+#endif
 
 public:
 	PhysicalDevice();
@@ -25,5 +36,6 @@ public:
 	int rateDeviceSuitability(VkPhysicalDevice device);
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 	bool isDeviceSuitable(VkPhysicalDevice device);
+	void createLogicalDevice(ValidationLayersManager* layersManager);
 };
 

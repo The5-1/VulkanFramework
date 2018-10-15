@@ -8,7 +8,7 @@ public:
 	LogicalDevice();
 	~LogicalDevice();
 
-	void createLogicalDevice();
+	//void createLogicalDevice();
 
 private:
 	VkDevice device;	
