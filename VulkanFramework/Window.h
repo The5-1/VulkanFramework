@@ -8,13 +8,16 @@
 class Window
 {
 private:
-	GLFWwindow* window;
 	const int WIDTH = 800;
 	const int HEIGHT = 600;
+	GLFWwindow* window;
+
+	VkSurfaceKHR surface;
 public:
 	Window();
 	~Window();
 	void initWindow();
 	bool shouldClose();
+	void createSurface(VkInstance & instance);
 };
 
