@@ -5,11 +5,13 @@
 #include <vector>
 #include "optional.h"
 #include "ValidationLayersManager.h"
+
 struct QueueFamilyIndices {
 	tl::optional<uint32_t> graphicsFamily;
+	tl::optional<uint32_t> presentFamily;
 
 	bool isComplete() {
-		return graphicsFamily.has_value();
+		return graphicsFamily.has_value() && presentFamily.has_value();
 	}
 };
 

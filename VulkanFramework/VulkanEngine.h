@@ -32,6 +32,10 @@ public:
 	std::vector<const char*> getRequiredExtensions();
 	bool checkValidationLayerSupport();
 
+	const VkInstance& getInstance() const { 
+		return instance; 
+	}
+
 private:
 
 };

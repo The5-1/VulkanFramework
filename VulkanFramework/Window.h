@@ -2,9 +2,6 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GL/glfw3.h>
 
-
-
-
 class Window
 {
 private:
@@ -13,11 +10,13 @@ private:
 	GLFWwindow* window;
 
 	VkSurfaceKHR surface;
+
 public:
 	Window();
 	~Window();
 	void initWindow();
 	bool shouldClose();
-	void createSurface(VkInstance & instance);
+	void createSurface(const VkInstance & instance);
+	void destroySurface(const VkInstance & instance);
 };
 

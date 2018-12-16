@@ -27,9 +27,14 @@ bool Window::shouldClose() {
 	return glfwWindowShouldClose(window);
 }
 
-void Window::createSurface(VkInstance & instance)
+void Window::createSurface(const VkInstance & instance)
 {
 	if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create window surface!");
 	}
+}
+
+void Window::destroySurface(const VkInstance & instance)
+{
+	vkDestroySurfaceKHR(instance, surface, nullptr);
 }

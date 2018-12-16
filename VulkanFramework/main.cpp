@@ -13,6 +13,9 @@ public:
 	void run() {
 		initWindow();
 		initVulkan();
+
+		window->createSurface(engine->getInstance());
+
 		mainLoop();
 		cleanup();
 	}
@@ -36,8 +39,9 @@ private:
 	}
 
 	void cleanup() {
-		delete engine;
+		window->destroySurface(engine->getInstance());
 		delete window;
+		delete engine;
 	}
 };
 

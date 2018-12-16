@@ -16,10 +16,14 @@ PhysicalDevice::~PhysicalDevice()
 void PhysicalDevice::pickPhysicalDevice(VkInstance& instance)
 {
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+	auto err = vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+	if (err) {
+		printf("Error trying to find GPUs!\n");
+	}
+
 
 	if (deviceCount == 0) {
-		throw std::runtime_error("failed to find GPUs with Vulkan support!");
+		throw std::runtime_error("Failed to find GPUs!");
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
